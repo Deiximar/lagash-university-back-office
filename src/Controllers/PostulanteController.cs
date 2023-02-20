@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Collections;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using BackOfficeLU.DAL;
 using BackOfficeLU.Models;
@@ -14,18 +12,18 @@ namespace BackOfficeLU.Controllers
 
         private readonly IPostulanteRepository repository;
 
-        public PostulanteController (IPostulanteRepository repository)
+        public PostulanteController(IPostulanteRepository repository)
         {
             this.repository = repository;
         }
 
-        
+
         [HttpPost]
         [Route("/api/Postulante/Add")]
         public bool Post([FromBody] Postulante postulante)
         {
 
-            if(this.ModelState.IsValid) 
+            if (this.ModelState.IsValid)
             {
                 try
                 {
@@ -36,17 +34,18 @@ namespace BackOfficeLU.Controllers
                 {
                     Console.WriteLine("{0} Ha ocurrido un error.", e);
                     return false;
-                    
+
                 }
 
                 repository.InsertPostulante(postulante, postulante.IdEdicion, postulante.Domicilio.Pais.IdPais);
                 return true;
             }
 
-             else {
+            else
+            {
 
                 var tt = this.ModelState.Select(x => x.Value.Errors)
-                           .Where(y=>y.Count>0)
+                           .Where(y => y.Count > 0)
                            .ToList();
 
                 return false;
@@ -55,9 +54,9 @@ namespace BackOfficeLU.Controllers
 
         [HttpGet]
         [Route("/api/Postulante/List/{idEdicion}")]
-        public IEnumerable <Postulante> GetPostulantes(int idEdicion)
+        public IEnumerable<Postulante> GetPostulantes(int idEdicion)
         {
-            return repository.GetPostulantes(idEdicion);    
+            return repository.GetPostulantes(idEdicion);
         }
 
 
@@ -65,23 +64,23 @@ namespace BackOfficeLU.Controllers
         [Route("/api/Postulante/{idPostulante}")]
         public Postulante GetPostulante(int idPostulante)
         {
-            return repository.GetPostulante(idPostulante);    
+            return repository.GetPostulante(idPostulante);
         }
-        
+
         [HttpGet]
         [Route("/api/Paises/List")]
 
-        public IEnumerable<Pais> GetPaises ()
+        public IEnumerable<Pais> GetPaises()
         {
             return repository.GetPaises();
         }
 
         [HttpPut]
-        [Route("/api/Postulante/Update/{idPostulante}")] 
+        [Route("/api/Postulante/Update/{idPostulante}")]
         public bool Put([FromBody] Postulante postulante, int idPostulante)
         {
 
-            if(this.ModelState.IsValid) 
+            if (this.ModelState.IsValid)
             {
                 try
                 {
@@ -92,7 +91,7 @@ namespace BackOfficeLU.Controllers
                 {
                     Console.WriteLine("{0} Exception caught.", e);
                     return false;
-                    
+
                 }
 
                 postulante.IdPostulante = idPostulante;
@@ -101,15 +100,16 @@ namespace BackOfficeLU.Controllers
 
             }
 
-             else {
+            else
+            {
 
                 var tt = this.ModelState.Select(x => x.Value.Errors)
-                           .Where(y=>y.Count>0)
+                           .Where(y => y.Count > 0)
                            .ToList();
-                           return false;
+                return false;
             }
-            
+
         }
-        
+
     }
 }

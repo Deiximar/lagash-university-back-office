@@ -17,7 +17,7 @@ namespace BackOfficeLU.DAL
                 conn.Open();
                 var locacion = conn.Query<Locacion>(sql);
                 conn.Close();
-                
+
                 return locacion;
             }
         }
@@ -25,10 +25,10 @@ namespace BackOfficeLU.DAL
         public Locacion GetLocacionByNombre(string nombre)
         {
             var sql = "SELECT * FROM Locacion WHERE Nombre = @Nombre";
-            using(var conn = new SqlConnection(ConnStr))
+            using (var conn = new SqlConnection(ConnStr))
             {
                 conn.Open();
-                Locacion locacion = conn.QueryFirstOrDefault<Locacion>(sql, new {Nombre = nombre} );
+                Locacion locacion = conn.QueryFirstOrDefault<Locacion>(sql, new { Nombre = nombre });
                 conn.Close();
 
                 return locacion;

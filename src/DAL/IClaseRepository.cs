@@ -6,12 +6,12 @@ namespace BackOfficeLU.DAL
 {
     public interface IClaseRepository
     {
-        
+
         int? GetOrInsertResponsable(Responsable responsable, int idEdicion);
         void InsertClase(Clase clase);
         Clase GetClase(int id);  //get single class
 
-        int SearchClaseRepetida (Clase clase);
+        int SearchClaseRepetida(Clase clase);
         IEnumerable<DateTime> GetFechasClases(int idEdicion);
         IEnumerable<Tema> GetAllTemas(int id);
         IEnumerable<Clase> GetAllClases(int idEdicion);

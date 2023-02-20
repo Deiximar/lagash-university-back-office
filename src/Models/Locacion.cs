@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace BackOfficeLU.Models
 {
     public class Locacion

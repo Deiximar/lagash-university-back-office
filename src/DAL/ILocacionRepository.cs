@@ -5,8 +5,7 @@ namespace BackOfficeLU.DAL
 {
     public interface ILocacionRepository
     {
-        IEnumerable<Locacion> GetAllLocacion ();
+        IEnumerable<Locacion> GetAllLocacion();
         Locacion GetLocacionByNombre(string nombre);
-        
     }
 }

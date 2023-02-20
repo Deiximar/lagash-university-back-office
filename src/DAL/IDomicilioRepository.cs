@@ -4,9 +4,8 @@ namespace BackOfficeLU.DAL
 {
     public interface IDomicilioRepository
     {
-        void InsertDomicilio (Domicilio domicilio);
-        Domicilio GetDomicilio ();
-        
+        void InsertDomicilio(Domicilio domicilio);
+        Domicilio GetDomicilio();
     }
-    
+
 }

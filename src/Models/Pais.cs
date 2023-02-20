@@ -4,9 +4,9 @@ namespace BackOfficeLU.Models
 {
     public class Pais
     {
-        public int? IdPais {get;set;}
-        
+        public int? IdPais { get; set; }
+
         [Required]
-        public string Descripcion {get;set;}
+        public string Descripcion { get; set; }
     }
 }

@@ -7,28 +7,23 @@ namespace BackOfficeLU.DAL
 {
     public class ResponsableRepository : IResponsableRepository
     {
+        private string connStr = @"Server=(localdb)\MSSQLLocalDB;Database=LagashBackOffice;Integrated Security=true";
 
-        private string connStr= @"Server=(localdb)\MSSQLLocalDB;Database=LagashBackOffice;Integrated Security=true";
-        
-         public IEnumerable <Responsable> GetAllResponsables (int idEdicion)
+        public IEnumerable<Responsable> GetAllResponsables(int idEdicion)
         {
 
             var sql = "select * from Responsable where IdEdicion = @IdEdicion";
 
-            using (var conn = new SqlConnection (connStr))
+            using (var conn = new SqlConnection(connStr))
             {
+                conn.Open();
 
-                conn.Open ();
+                var responsables = conn.Query<Responsable>(sql, new { IdEdicion = idEdicion });
 
-                var responsables = conn.Query<Responsable>(sql, new {IdEdicion = idEdicion} );
-
-                conn.Close ();
+                conn.Close();
 
                 return responsables;
-
             }
-
         }
-
     }
 }

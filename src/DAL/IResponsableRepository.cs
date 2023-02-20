@@ -5,9 +5,7 @@ namespace BackOfficeLU.DAL
 {
     public interface IResponsableRepository
     {
-         IEnumerable <Responsable> GetAllResponsables (int idEdicion);
-
-
+        IEnumerable<Responsable> GetAllResponsables(int idEdicion);
     }
 
 }

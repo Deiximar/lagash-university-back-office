@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using BackOfficeLU.Models;
 using Dapper;
 
@@ -9,10 +7,9 @@ namespace BackOfficeLU.DAL
 {
     public class PostulanteRepository : IPostulanteRepository
     {
+        private string connStr = @"Server=(localdb)\MSSQLLocalDB;Database=LagashBackOffice;Integrated Security=true";
 
-        private string connStr= @"Server=(localdb)\MSSQLLocalDB;Database=LagashBackOffice;Integrated Security=true";
-
-         public IEnumerable<Postulante> GetPostulantes(int idEdicion)
+        public IEnumerable<Postulante> GetPostulantes(int idEdicion)
         {
             var sql = "select * from Postulante where IdEdicion = @IdEdicion order by NombreyApellido";
 
@@ -20,28 +17,27 @@ namespace BackOfficeLU.DAL
             {
                 conn.Open();
                 var postulantes = conn.Query<Postulante>(sql, new { IdEdicion = idEdicion });
-                
-                foreach ( var item in postulantes )
+
+                foreach (var item in postulantes)
                 {
-       
-                var sqlIdDomicilio = "select IdDomicilio from Postulante where IdPostulante = "+item.IdPostulante;
-                int idDomicilio = conn.QueryFirstOrDefault<int>(sqlIdDomicilio);
 
-                var sqlDomicilio = "select * from Domicilio where IdDomicilio = "+idDomicilio;
-                item.Domicilio = conn.QueryFirstOrDefault<Domicilio>(sqlDomicilio);
+                    var sqlIdDomicilio = "select IdDomicilio from Postulante where IdPostulante = " + item.IdPostulante;
+                    int idDomicilio = conn.QueryFirstOrDefault<int>(sqlIdDomicilio);
 
-                var sqlIdPais = "select IdPais from Domicilio where IdDomicilio = "+idDomicilio;
-                int idPais = conn.QueryFirstOrDefault<int>(sqlIdPais);
+                    var sqlDomicilio = "select * from Domicilio where IdDomicilio = " + idDomicilio;
+                    item.Domicilio = conn.QueryFirstOrDefault<Domicilio>(sqlDomicilio);
 
-                var sqlPais = "select * from Pais where IdPais = "+idPais;
-                item.Domicilio.Pais = conn.QueryFirstOrDefault<Pais>(sqlPais);
+                    var sqlIdPais = "select IdPais from Domicilio where IdDomicilio = " + idDomicilio;
+                    int idPais = conn.QueryFirstOrDefault<int>(sqlIdPais);
+
+                    var sqlPais = "select * from Pais where IdPais = " + idPais;
+                    item.Domicilio.Pais = conn.QueryFirstOrDefault<Pais>(sqlPais);
 
                 }
 
                 conn.Close();
 
                 return postulantes;
-
             }
         }
 
@@ -50,44 +46,43 @@ namespace BackOfficeLU.DAL
             using (var conn = new SqlConnection(connStr))
             {
                 conn.Open();
-                var sqlPostulante = "select * from Postulante where IdPostulante = "+idPostulante;
+                var sqlPostulante = "select * from Postulante where IdPostulante = " + idPostulante;
                 Postulante postulante = conn.QueryFirstOrDefault<Postulante>(sqlPostulante);
 
-                var sqlIdDomicilio = "select IdDomicilio from Postulante where IdPostulante = "+idPostulante;
+                var sqlIdDomicilio = "select IdDomicilio from Postulante where IdPostulante = " + idPostulante;
                 int idDomicilio = conn.QueryFirstOrDefault<int>(sqlIdDomicilio);
 
-                var sqlDomicilio = "select * from Domicilio where IdDomicilio = "+idDomicilio;
+                var sqlDomicilio = "select * from Domicilio where IdDomicilio = " + idDomicilio;
                 postulante.Domicilio = conn.QueryFirstOrDefault<Domicilio>(sqlDomicilio);
 
-                var sqlIdPais = "select IdPais from Domicilio where IdDomicilio = "+idDomicilio;
+                var sqlIdPais = "select IdPais from Domicilio where IdDomicilio = " + idDomicilio;
                 int idPais = conn.QueryFirstOrDefault<int>(sqlIdPais);
 
-                var sqlPais = "select * from Pais where IdPais = "+idPais;
+                var sqlPais = "select * from Pais where IdPais = " + idPais;
                 postulante.Domicilio.Pais = conn.QueryFirstOrDefault<Pais>(sqlPais);
 
                 conn.Close();
 
                 return postulante;
-
             }
         }
 
         public void InsertPostulante(Postulante postulante, int idEdicion, int? idPais)
         {
-            if ( postulante.GitHub == "" )
+            if (postulante.GitHub == "")
             {
                 postulante.GitHub = null;
             }
-            if ( postulante.LinkedIn == "" )
+            if (postulante.LinkedIn == "")
             {
                 postulante.LinkedIn = null;
             }
-            if ( postulante.Domicilio.Piso == "")
+            if (postulante.Domicilio.Piso == "")
             {
                 postulante.Domicilio.Piso = null;
             }
 
-            using (var conn = new SqlConnection (connStr))
+            using (var conn = new SqlConnection(connStr))
             {
                 conn.Open();
 
@@ -111,8 +106,8 @@ namespace BackOfficeLU.DAL
                                         ,@CodigoPostal)
                                     SELECT @@IDENTITY";
 
-                int idDomicilio = conn.QueryFirstOrDefault<int>(sqlDomicilio, new {
-
+                int idDomicilio = conn.QueryFirstOrDefault<int>(sqlDomicilio, new
+                {
                     IdPais = idPais,
                     Calle = postulante.Domicilio.Calle,
                     NumeroCalle = postulante.Domicilio.NumeroCalle,
@@ -121,7 +116,6 @@ namespace BackOfficeLU.DAL
                     Localidad = postulante.Domicilio.Localidad,
                     Provincia = postulante.Domicilio.Provincia,
                     CodigoPostal = postulante.Domicilio.CodigoPostal
-
                 });
 
                 postulante.Domicilio.IdDomicilio = idDomicilio;
@@ -149,23 +143,22 @@ namespace BackOfficeLU.DAL
                                             ,@LinkedIn
                                             ,@Equipo)";
 
-                conn.QueryFirstOrDefault(sqlPostulante, new { 
-
-                    IdDomicilio = idDomicilio
-                    ,Rol = postulante.Rol
-                    ,IdEdicion = idEdicion
-                    ,DNI = postulante.DNI
-                    ,NombreyApellido = postulante.NombreyApellido
-                    ,Email = postulante.Email
-                    ,Telefono = postulante.Telefono
-                    ,GitHub = postulante.GitHub
-                    ,LinkedIn = postulante.LinkedIn
-                    ,Equipo = postulante.Equipo
+                conn.QueryFirstOrDefault(sqlPostulante, new
+                {
+                    IdDomicilio = idDomicilio,
+                    Rol = postulante.Rol,
+                    IdEdicion = idEdicion,
+                    DNI = postulante.DNI,
+                    NombreyApellido = postulante.NombreyApellido,
+                    Email = postulante.Email,
+                    Telefono = postulante.Telefono,
+                    GitHub = postulante.GitHub,
+                    LinkedIn = postulante.LinkedIn,
+                    Equipo = postulante.Equipo
                 });
 
-                conn.Close ();
+                conn.Close();
             }
-
         }
 
         public IEnumerable<Pais> GetPaises()
@@ -179,20 +172,18 @@ namespace BackOfficeLU.DAL
                 conn.Close();
 
                 return paises;
-
             }
         }
 
         public Postulante Update(Postulante postulante, int idPostulante, int? idPais)
         {
-
             Postulante _postulante = GetPostulante(idPostulante);
 
             using (var conn = new SqlConnection(connStr))
             {
                 conn.Open();
 
-                var sqlDomicilio =  @"UPDATE [dbo].[Domicilio]
+                var sqlDomicilio = @"UPDATE [dbo].[Domicilio]
                                 SET      IdPais = @IdPais
                                         ,Calle = @Calle
                                         ,NumeroCalle = @NumeroCalle
@@ -202,9 +193,10 @@ namespace BackOfficeLU.DAL
                                         ,Provincia = @Provincia
                                         ,CodigoPostal = @CodigoPostal
 
-                                        where IdDomicilio = "+_postulante.Domicilio.IdDomicilio;
+                                        where IdDomicilio = " + _postulante.Domicilio.IdDomicilio;
 
-                conn.QueryFirstOrDefault(sqlDomicilio, new {
+                conn.QueryFirstOrDefault(sqlDomicilio, new
+                {
 
                     IdPais = idPais,
                     Calle = postulante.Domicilio.Calle,
@@ -217,8 +209,7 @@ namespace BackOfficeLU.DAL
 
                 });
 
-                
-            var sqlPostulante = @"UPDATE [dbo].[Postulante]
+                var sqlPostulante = @"UPDATE [dbo].[Postulante]
                        SET  IdDomicilio = @IdDomicilio,
                             Rol = @Rol,
                             IdEdicion = @IdEdicion,
@@ -231,29 +222,27 @@ namespace BackOfficeLU.DAL
                             LinkedIn = @LinkedIn,
                             Equipo = @Equipo
 
-                         WHERE IdPostulante = "+idPostulante;
+                         WHERE IdPostulante = " + idPostulante;
 
-                conn.QueryFirstOrDefault(sqlPostulante, new { 
+                conn.QueryFirstOrDefault(sqlPostulante, new
+                {
 
-                    IdDomicilio = _postulante.Domicilio.IdDomicilio
-                    ,Rol = postulante.Rol
-                    ,IdEdicion = postulante.IdEdicion
-                    ,DNI = postulante.DNI
-                    ,NombreyApellido = postulante.NombreyApellido
-                    ,Email = postulante.Email
-                    ,Telefono = postulante.Telefono
-                    ,GitHub = postulante.GitHub
-                    ,LinkedIn = postulante.LinkedIn
-                    ,Equipo = postulante.Equipo
+                    IdDomicilio = _postulante.Domicilio.IdDomicilio,
+                    Rol = postulante.Rol,
+                    IdEdicion = postulante.IdEdicion,
+                    DNI = postulante.DNI,
+                    NombreyApellido = postulante.NombreyApellido,
+                    Email = postulante.Email,
+                    Telefono = postulante.Telefono,
+                    GitHub = postulante.GitHub,
+                    LinkedIn = postulante.LinkedIn,
+                    Equipo = postulante.Equipo
                 });
 
                 conn.Close();
 
                 return postulante;
-
             }
-        
         }
-
     }
 }

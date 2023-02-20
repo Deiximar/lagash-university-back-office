@@ -15,7 +15,7 @@ namespace BackOfficeLU.DAL
                         FROM Edicion edi 
                         INNER JOIN Locacion loc ON loc.IdLocacion = edi.IdLocacion
                         ORDER BY NumeroEdicion";
-                        
+
             using (var conn = new SqlConnection(ConnStr))
             {
                 conn.Open();
@@ -32,7 +32,7 @@ namespace BackOfficeLU.DAL
             using (var conn = new SqlConnection(ConnStr))
             {
                 conn.Open();
-                Edicion edicion = conn.Query<Edicion, Locacion, Edicion>(sql, param: new {IdEdicion = idEdicion}, map: GetLocacionByNombre, splitOn: "IdLocacion")
+                Edicion edicion = conn.Query<Edicion, Locacion, Edicion>(sql, param: new { IdEdicion = idEdicion }, map: GetLocacionByNombre, splitOn: "IdLocacion")
                 .FirstOrDefault();
                 conn.Close();
 
@@ -44,12 +44,18 @@ namespace BackOfficeLU.DAL
         {
             var sql = @"INSERT INTO Edicion (IdLocacion, NumeroEdicion, FechaInicio, FechaFin, CantidadPostulantes)
                         VALUES (@IdLocacion, @NumeroEdicion, @FechaInicio, @FechaFin, @CantidadPostulantes)";
-            
+
             using (var conn = new SqlConnection(ConnStr))
             {
                 conn.Open();
-                conn.Execute(sql, new{IdLocacion = edicion.Locacion.IdLocacion, NumeroEdicion = edicion.NumeroEdicion, FechaInicio = edicion.FechaInicio,
-                                      FechaFin = edicion.FechaFin, CantidadPostulantes = edicion.CantidadPostulantes});
+                conn.Execute(sql, new
+                {
+                    IdLocacion = edicion.Locacion.IdLocacion,
+                    NumeroEdicion = edicion.NumeroEdicion,
+                    FechaInicio = edicion.FechaInicio,
+                    FechaFin = edicion.FechaFin,
+                    CantidadPostulantes = edicion.CantidadPostulantes
+                });
                 conn.Close();
             }
         }
@@ -66,8 +72,15 @@ namespace BackOfficeLU.DAL
             using (var conn = new SqlConnection(ConnStr))
             {
                 conn.Open();
-                conn.Execute(sql, new{IdLocacion = edicion.Locacion.IdLocacion, NumeroEdicion= edicion.NumeroEdicion, FechaInicio = edicion.FechaInicio, 
-                FechaFin = edicion.FechaFin, CantidadPostulantes = edicion.CantidadPostulantes, IdEdicion = edicion.IdEdicion});
+                conn.Execute(sql, new
+                {
+                    IdLocacion = edicion.Locacion.IdLocacion,
+                    NumeroEdicion = edicion.NumeroEdicion,
+                    FechaInicio = edicion.FechaInicio,
+                    FechaFin = edicion.FechaFin,
+                    CantidadPostulantes = edicion.CantidadPostulantes,
+                    IdEdicion = edicion.IdEdicion
+                });
                 conn.Close();
 
                 return edicion;
@@ -94,12 +107,11 @@ namespace BackOfficeLU.DAL
         {
             edicion.Locacion = locacion;
             return edicion;
-
         }
 
-        public IEnumerable<int> GetNumberEdition (int idEdicionExcluido)
+        public IEnumerable<int> GetNumberEdition(int idEdicionExcluido)
         {
-            var sql="select NumeroEdicion from Edicion where IdEdicion != @IdEdicionExcluida";
+            var sql = "select NumeroEdicion from Edicion where IdEdicion != @IdEdicionExcluida";
 
             using (var conn = new SqlConnection(ConnStr))
             {
@@ -110,8 +122,6 @@ namespace BackOfficeLU.DAL
                 return NumberClases;
 
             }
-
         }
-
     }
 }

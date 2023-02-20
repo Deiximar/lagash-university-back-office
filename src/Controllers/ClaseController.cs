@@ -15,19 +15,19 @@ namespace BackOfficeLU.Controllers
         private readonly IResponsableRepository repositoryRes;
         private IWebHostEnvironment _env;
 
-        public ClasesController (IClaseRepository repository, IResponsableRepository repositoryRes, IWebHostEnvironment env)
+        public ClasesController(IClaseRepository repository, IResponsableRepository repositoryRes, IWebHostEnvironment env)
         {
             this.repository = repository;
             this.repositoryRes = repositoryRes;
             this._env = env;
         }
 
-        
+
         [HttpPost]
         [Route("/api/Clase/Create")]/*  */
         public bool Post([FromBody] Clase clase)
         {
-            if(this.ModelState.IsValid) 
+            if (this.ModelState.IsValid)
             {
                 try
                 {
@@ -38,16 +38,17 @@ namespace BackOfficeLU.Controllers
                 {
                     Console.WriteLine("{0} Ha ocurrido un error.", e);
                     return false;
-                    
+
                 }
                 repository.InsertClase(clase);
                 return true;
             }
 
-             else {
+            else
+            {
 
                 var tt = this.ModelState.Select(x => x.Value.Errors)
-                           .Where(y=>y.Count>0)
+                           .Where(y => y.Count > 0)
                            .ToList();
                 return false;
             }
@@ -56,17 +57,18 @@ namespace BackOfficeLU.Controllers
 
         [HttpGet]
         [Route("/api/Clase/Fechas/{idEdicion}")]
-        public IEnumerable<DateTime> GetFechasClases (int idEdicion)
+        public IEnumerable<DateTime> GetFechasClases(int idEdicion)
         {
-            return repository.GetFechasClases(idEdicion);    
+            return repository.GetFechasClases(idEdicion);
         }
 
         [HttpGet]
         [Route("/api/Clase/FechasCalendario/{idEdicion}")]
-        public IEnumerable<FechasCalendario> GetFechasCalendario(int idEdicion )
+        public IEnumerable<FechasCalendario> GetFechasCalendario(int idEdicion)
         {
-            return repository.GetAllClases(idEdicion).Select(x => new FechasCalendario() {
-                title = x.TituloClase, 
+            return repository.GetAllClases(idEdicion).Select(x => new FechasCalendario()
+            {
+                title = x.TituloClase,
                 allDay = true,
                 id = x.IdClase.Value,
                 start = x.Fecha,
@@ -78,7 +80,7 @@ namespace BackOfficeLU.Controllers
         [Route("/api/Clase/{id}")]
         public Clase GetClase(int id)
         {
-            return repository.GetClase(id);    
+            return repository.GetClase(id);
         }
 
 
@@ -98,9 +100,9 @@ namespace BackOfficeLU.Controllers
 
 
         [Route("/api/Clase/Responsables/{idEdicion}")]
-        public IEnumerable <Responsable> GetResponsables (int idEdicion)
+        public IEnumerable<Responsable> GetResponsables(int idEdicion)
         {
-            return repositoryRes.GetAllResponsables(idEdicion);    
+            return repositoryRes.GetAllResponsables(idEdicion);
         }
 
         [HttpPut]
@@ -108,17 +110,17 @@ namespace BackOfficeLU.Controllers
         public IActionResult Put([FromBody] Clase clase, int idClase)
         {
 
-             if(this.ModelState.IsValid)
-            { 
-                clase.IdClase = idClase;
-                return Ok(repository.Update(clase));                
-            }
-            else 
+            if (this.ModelState.IsValid)
             {
-                var errors = string.Join("<br/>", this.ModelState.Values.SelectMany(e=> e.Errors.Select(er=>er.ErrorMessage)));
+                clase.IdClase = idClase;
+                return Ok(repository.Update(clase));
+            }
+            else
+            {
+                var errors = string.Join("<br/>", this.ModelState.Values.SelectMany(e => e.Errors.Select(er => er.ErrorMessage)));
                 return BadRequest(errors);
             }
-            
+
         }
 
         [HttpDelete]
@@ -126,11 +128,11 @@ namespace BackOfficeLU.Controllers
         public void Delete(int id)
         {
             repository.Delete(id);
-        } 
-      
+        }
+
         [HttpPost]
         [Route("/api/Clase/{idclase}/EnviarMail")]
-        public void Post( int idclase)
+        public void Post(int idclase)
         {
             EnvioMail envioMail = new EnvioMail();
             EmailClase Correo = new EmailClase();
@@ -140,11 +142,11 @@ namespace BackOfficeLU.Controllers
             Correo.NumeroClase = clase.NumeroClase.Value;
             Correo.Responsable1 = clase.Responsable1.NombreyApellido;
 
-            if (clase.Responsable2 != null) 
+            if (clase.Responsable2 != null)
             {
-                Correo.Responsable2 = clase.Responsable2.NombreyApellido; 
+                Correo.Responsable2 = clase.Responsable2.NombreyApellido;
             }
-            else 
+            else
             {
                 Correo.Responsable2 = "N/A";
             }
